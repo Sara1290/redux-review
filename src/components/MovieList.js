@@ -1,24 +1,48 @@
 import React from 'react'
 import styles from './styles'
+import { connect } from 'react-redux'
+import { updateMovieList } from '../dux/movieReducer'
 
-const MovieList = props => {
-  const movieList = [].map(element => {
-    return (
-      <div style={styles.movieListItem}>
-        <img style={styles.poster} src={element.poster} alt={element.title} />
-        <div style={styles.listItemInfo}>
-          <p style={styles.listItemText}>{element.title}</p>
-          <p style={styles.listItemText}>{element.rating}/10</p>
-        </div>
-      </div>
-    )
-  })
+
+const MovieConfirm = props => {
+
+  const {title, poster, rating} = props
+
+  const confirmMovie = () => {
+    props.updateMovieList({title, poster, rating})
+    props.history.push('/list')
+  }
+
+  
 
   return (
+    
     <div style={styles.container}>
-      <p style={styles.containerHeading}>A LIST OF MOVIES</p>
-      {movieList}
+      <p style={styles.containerHeading}>CONFIRM YOUR DETAILS</p>
+      <p style={styles.confirmText}>{`${title} - ${rating}`}</p>
+      <img src={`${poster}`} alt="Movie Poster" />
+      <div>
+        <button
+          onClick={() => props.history.push('/')}
+          style={styles.formButton}
+        >
+          BACK
+        </button>
+        <button onClick={confirmMovie} style={styles.formButton}>
+          CONFIRM
+        </button>
+      </div>
     </div>
   )
 }
-export default MovieList
+
+
+const mapStateToProps = (state) => {
+  const { title, poster, rating } = state
+  return {
+    title, poster, rating
+  }
+}
+
+
+export default connect(mapStateToProps, {updateMovieList})(MovieConfirm)
